@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPath AI - Personalized Career Guidance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        }
+        
+        .career-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .career-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            transition: width 0.5s ease;
+        }
+        
+        .result-card {
+            border-left: 4px solid #6366f1;
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .option-card {
+            transition: all 0.2s ease;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .option-card:hover {
+            border-color: #c7d2fe;
+            background-color: #f8fafc;
+        }
+        
+        .option-card.selected {
+            border-color: #6366f1;
+            background-color: #eef2ff;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        #resumeUpload {
+            display: none;
+        }
+        
+        .resume-upload-label {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .resume-upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-name {
+            margin-top: 8px;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .roadmap-step {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .roadmap-step:before {
+            content: "";
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: #c7d2fe;
+        }
+        
+        .roadmap-step:last-child:before {
+            height: 1.5rem;
+        }
+        
+        .roadmap-step:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #6366f1;
+        }
+        
+        .quiz-option {
+            transition: all 0.2s ease;
+        }
+        
+        .quiz-option:hover {
+            background-color: #f8fafc;
+        }
+        
+        .quiz-option.selected {
+            background-color: #eef2ff;
+            border-color: #6366f1;
+        }
+        
+        #google_translate_element {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            z-index: 100;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <div id="google_translate_element"></div>
+
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-robot text-2xl"></i>
+                    <span class="text-xl font-bold">CareerPath AI</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-indigo-200 transition">Home</a>
+                    <a href="http://127.0.0.1:5500/index.html#how-it-works" class="hover:text-indigo-200 transition">How it works</a>
+                    <a href="#testimonials" class="hover:text-indigo-200 transition">Testimonials</a>
+                    <a href="http://127.0.0.1:5500/index.html#resources" class="hover:text-indigo-200 transition">Resources</a>
+                </div>
+                <div>
+                    <button class="bg-white text-indigo-600 px-4 py-2 rounded-full font-medium hover:bg-indigo-50 transition">
+                        <a href="signin.html">Sign In</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="gradient-bg text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
+                        Discover Your Perfect Career Path with AI
+                    </h1>
+                    <p class="text-xl mb-8 text-indigo-100">
+                        Our intelligent system analyzes your skills, interests, and personality to recommend personalized career options, courses, and internships.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button id="startAssessmentBtn" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-bold hover:bg-indigo-50 transition flex items-center justify-center">
+                            <i class="fas fa-play-circle mr-2"></i> Start Free Assessment
+                        </button>
+                        <a href="http://127.0.0.1:5500/index.html" class="border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:bg-opacity-10 transition flex items-center justify-center">
+                            <i class="fas fa-info-circle mr-2"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="path.jpeg" 
+                         alt="Career guidance" 
+                         class="rounded-xl shadow-2xl max-w-md w-full h-auto object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assessmentSection" class="hidden py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Career Assessment</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Answer these questions honestly to help our AI understand your strengths and interests better.
+                </p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-8">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Progress</span>
+                        <span id="progressPercentage" class="text-sm font-medium text-gray-700">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="questionContainer" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+                    
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="prevBtn" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition hidden">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </button>
+                    <button id="nextBtn" class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition ml-auto">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resultsSection" class="hidden py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Your Career Matches</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Based on your assessment, here are the career paths that align with your skills and interests.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12" id="careerMatchesContainer">
+            
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden fade-in">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-graduation-cap text-indigo-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Recommended Courses</h3>
+                        </div>
+                        <div id="coursesList" class="space-y-4">
+                    
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md overflow-hidden fade-in">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-briefcase text-purple-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Recommended Internships</h3>
+                        </div>
+                        <div id="internshipsList" class="space-y-4">
+                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md overflow-hidden fade-in mb-12">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-pink-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-road text-pink-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Career Roadmap</h3>
+                    </div>
+                    <div id="roadmapContent" class="space-y-4">
+            
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="retakeAssessmentBtn" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition mr-4">
+                    <i class="fas fa-redo mr-2"></i> Retake Assessment
+                </button>
+                <button id="downloadReportBtn" class="border-2 border-indigo-600 text-indigo-600 px-6 py-3 rounded-lg font-medium hover:bg-indigo-50 transition">
+                    <i class="fas fa-download mr-2"></i> Download Report
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">How CareerPath AI Works</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Our advanced AI analyzes multiple dimensions to provide personalized career recommendations.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 rounded-xl p-6 text-center hover:shadow-md transition">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-brain text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Skills Assessment</h3>
+                    <p class="text-gray-600">
+                        We evaluate your technical and soft skills through interactive questions and scenarios.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 text-center hover:shadow-md transition">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heart text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Interest Mapping</h3>
+                    <p class="text-gray-600">
+                        Our system identifies your passions and what activities energize you.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 text-center hover:shadow-md transition">
+                    <div class="bg-pink-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-pink-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Market Analysis</h3>
+                    <p class="text-gray-600">
+                        We combine your profile with current job market trends and future projections.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Success Stories</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Hear from students who found their ideal career path with our AI guidance.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">NANU.THANOS</h4>
+                            <p class="text-sm text-gray-500">Software Engineer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "CareerPath helped me transition from marketing to tech by identifying my aptitude for problem-solving. I'm now working at my dream company!"
+                    </p>
+                    <div class="flex mt-3 text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">SHIVAM.IRONMAN</h4>
+                            <p class="text-sm text-gray-500">UX Designer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "I was lost after graduation, but the assessment showed my creative strengths matched perfectly with UX design. Best career decision ever!"
+                    </p>
+                    <div class="flex mt-3 text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">HULK.SHING</h4>
+                            <p class="text-sm text-gray-500">Data Scientist</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "The course recommendations were spot on! I completed the suggested data science program and landed my first job within 3 months."
+                    </p>
+                    <div class="flex mt-3 text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resources" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Career Resources</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Explore our collection of resources to boost your career development.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            
+                <div class="bg-indigo-50 rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition resume-upload-label">
+                    <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx">
+                    <label for="resumeUpload" class="w-full h-full flex flex-col items-center cursor-pointer">
+                        <div class="bg-indigo-100 p-3 rounded-full mb-3">
+                            <i class="fas fa-file-upload text-indigo-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-medium text-gray-800 mb-1">Upload Resume</h3>
+                        <p class="text-sm text-gray-500">PDF or Word document</p>
+                        <div id="fileNameDisplay" class="file-name"></div>
+                    </label>
+                </div>
+                
+            
+                <div id="skillsQuizBtn" class="bg-purple-50 rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition cursor-pointer">
+                    <div class="bg-purple-100 p-3 rounded-full mb-3">
+                        <i class="fas fa-question-circle text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800 mb-1">Skills Quiz</h3>
+                    <p class="text-sm text-gray-500">Test your technical skills</p>
+                </div>
+                
+            
+                <a href="https://www.16personalities.com/free-personality-test" target="_blank" class="bg-blue-50 rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition">
+                    <div class="bg-blue-100 p-3 rounded-full mb-3">
+                        <i class="fas fa-user-shield text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800 mb-1">MBTI Test</h3>
+                    <p class="text-sm text-gray-500">Discover your personality type</p>
+                </a>
+                
+        
+                <div id="mentorGuidanceBtn" class="bg-green-50 rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition cursor-pointer">
+                    <div class="bg-green-100 p-3 rounded-full mb-3">
+                        <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800 mb-1">Mentor Guidance</h3>
+                    <p class="text-sm text-gray-500">Connect with career mentors</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div id="skillsQuizModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Skills Assessment Quiz</h3>
+                <button id="closeQuizModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="quizContainer" class="space-y-6">
+                
+            </div>
+            <div class="mt-6 text-center">
+                <button id="submitQuizBtn" class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition">
+                    Submit Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mentorModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Connect with Career Mentors</h3>
+                <button id="closeMentorModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-gray-800 mb-2">Find Your Mentor</h4>
+                    <p class="text-gray-600 mb-4">Connect with experienced professionals in your field of interest for personalized guidance.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border rounded-lg p-4 hover:border-indigo-300 transition">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-user-tie text-indigo-600"></i>
+                                </div>
+                                <h5 class="font-medium">Industry Experts</h5>
+                            </div>
+                            <p class="text-sm text-gray-600">Get insights from professionals currently working in your desired field.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 hover:border-indigo-300 transition">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-graduation-cap text-purple-600"></i>
+                                </div>
+                                <h5 class="font-medium">Career Coaches</h5>
+                            </div>
+                            <p class="text-sm text-gray-600">Professional coaches to help you navigate your career decisions.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-gray-800 mb-2">Request Mentorship</h4>
+                    <form id="mentorRequestForm">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2">Career Field</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option>Technology</option>
+                                <option>Business</option>
+                                <option>Healthcare</option>
+                                <option>Creative Arts</option>
+                                <option>Science</option>
+                                <option>Education</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2">Your Goals</label>
+                            <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Describe what you hope to achieve through mentorship"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2">Availability</label>
+                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Preferred days/times for sessions">
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition">
+                            Request Mentor Match
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="gradient-bg text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Ready to Discover Your Ideal Career?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto text-indigo-100">
+                Join thousands of students who have found clarity and direction with our AI-powered career guidance.
+            </p>
+            <button id="ctaAssessmentBtn" class="bg-white text-indigo-600 px-8 py-3 rounded-full font-bold hover:bg-indigo-50 transition floating-btn">
+                <i class="fas fa-play-circle mr-2"></i> Start Free Assessment Now
+            </button>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-robot text-2xl"></i>
+                        <span class="text-xl font-bold">CareerPath AI</span>
+                    </div>
+                    <p class="text-gray-400">
+                        Empowering students with AI-driven career guidance to help them find their perfect path.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">How it works</a></li>
+                        <li><a href="#testimonials" class="text-gray-400 hover:text-white transition">Testimonials</a></li>
+                        <li><a href="#resources" class="text-gray-400 hover:text-white transition">Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Career Guides</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Skill Development</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Mentor Guidance</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Personality Tests</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Connect With Us</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-indigo-600 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-400 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-pink-600 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        hackZilla@careerpath<br>
+                       + 123456789
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,it,pt,hi',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const startAssessmentBtn = document.getElementById('startAssessmentBtn');
+            const ctaAssessmentBtn = document.getElementById('ctaAssessmentBtn');
+            const assessmentSection = document.getElementById('assessmentSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const questionContainer = document.getElementById('questionContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const retakeAssessmentBtn = document.getElementById('retakeAssessmentBtn');
+            const downloadReportBtn = document.getElementById('downloadReportBtn');
+            const careerMatchesContainer = document.getElementById('careerMatchesContainer');
+            const resumeUpload = document.getElementById('resumeUpload');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            const skillsQuizBtn = document.getElementById('skillsQuizBtn');
+            const skillsQuizModal = document.getElementById('skillsQuizModal');
+            const closeQuizModal = document.getElementById('closeQuizModal');
+            const quizContainer = document.getElementById('quizContainer');
+            const submitQuizBtn = document.getElementById('submitQuizBtn');
+            const mentorGuidanceBtn = document.getElementById('mentorGuidanceBtn');
+            const mentorModal = document.getElementById('mentorModal');
+            const closeMentorModal = document.getElementById('closeMentorModal');
+            const roadmapContent = document.getElementById('roadmapContent');
+    
+            
+            const questions = [
+                {
+                    id: 1,
+                    question: "Which of these activities do you enjoy the most?",
+                    options: [
+                        "Solving complex problems",
+                        "Creating art or designing things",
+                        "Helping or teaching others",
+                        "Analyzing data or researching",
+                        "Organizing events or people"
+                    ],
+                    type: "interest"
+                },
+                {
+                    id: 2,
+                    question: "What are your strongest skills?",
+                    options: [
+                        "Mathematics and logical thinking",
+                        "Creativity and imagination",
+                        "Communication and empathy",
+                        "Attention to detail and analysis",
+                        "Leadership and management"
+                    ],
+                    type: "skill"
+                },
+                {
+                    id: 3,
+                    question: "Which work environment do you prefer?",
+                    options: [
+                        "Structured and predictable",
+                        "Flexible and creative",
+                        "Social and interactive",
+                        "Independent and quiet",
+                        "Fast-paced and dynamic"
+                    ],
+                    type: "preference"
+                },
+                {
+                    id: 4,
+                    question: "What type of tasks keep you engaged the longest?",
+                    options: [
+                        "Technical challenges",
+                        "Creative projects",
+                        "Helping people solve problems",
+                        "Research and data analysis",
+                        "Planning and organizing"
+                    ],
+                    type: "engagement"
+                },
+                {
+                    id: 5,
+                    question: "Which of these values is most important to you in a career?",
+                    options: [
+                        "Innovation and technology",
+                        "Self-expression and artistry",
+                        "Making a difference in people's lives",
+                        "Knowledge and expertise",
+                        "Success and achievement"
+                    ],
+                    type: "values"
+                }
+            ];
+    
+        
+            const careerPaths = {
+                technical: {
+                    title: "Technical Careers",
+                    description: "Careers in software development, engineering, data science, and other technical fields.",
+                    match: 0,
+                    icon: "fas fa-code",
+                    examples: "Software Engineer, Data Scientist, Cybersecurity Analyst, AI Specialist",
+                    roadmap: [
+                        "Complete foundational courses in computer science and mathematics",
+                        "Learn programming languages relevant to your field (Python, Java, etc.)",
+                        "Build projects to apply your knowledge and create a portfolio",
+                        "Pursue internships or entry-level positions in your chosen field",
+                        "Consider specialized certifications or advanced degrees",
+                        "Contribute to open-source projects or publish research",
+                        "Network with professionals in your industry",
+                        "Continuously update your skills with new technologies"
+                    ]
+                },
+                creative: {
+                    title: "Creative Careers",
+                    description: "Careers in design, arts, writing, and other creative fields.",
+                    match: 0,
+                    icon: "fas fa-paint-brush",
+                    examples: "Graphic Designer, UX Designer, Creative Director, Video Editor",
+                    roadmap: [
+                        "Develop your creative skills through practice and training",
+                        "Build a strong portfolio showcasing your best work",
+                        "Learn industry-standard tools and software",
+                        "Seek internships or freelance opportunities",
+                        "Attend industry events and network with professionals",
+                        "Consider specialized training or certifications",
+                        "Develop your personal brand and online presence",
+                        "Stay current with design trends and technologies"
+                    ]
+                },
+                helping: {
+                    title: "Helping Professions",
+                    description: "Careers in healthcare, education, social work, and other helping fields.",
+                    match: 0,
+                    icon: "fas fa-hands-helping",
+                    examples: "Teacher, Nurse, Psychologist, Social Worker",
+                    roadmap: [
+                        "Complete required education and certifications",
+                        "Gain practical experience through internships or volunteering",
+                        "Develop strong interpersonal and communication skills",
+                        "Consider specialization within your field",
+                        "Build a professional network in your industry",
+                        "Stay current with best practices and research",
+                        "Pursue continuing education opportunities",
+                        "Consider leadership or advanced practice roles"
+                    ]
+                },
+                analytical: {
+                    title: "Analytical Careers",
+                    description: "Careers in research, finance, law, and other analytical fields.",
+                    match: 0,
+                    icon: "fas fa-chart-bar",
+                    examples: "Financial Analyst, Market Researcher, Lawyer, Business Consultant",
+                    roadmap: [
+                        "Develop strong analytical and critical thinking skills",
+                        "Complete relevant education and certifications",
+                        "Gain practical experience through internships",
+                        "Learn industry-specific tools and methodologies",
+                        "Build a professional network in your field",
+                        "Consider specialization within your industry",
+                        "Stay current with industry trends and regulations",
+                        "Pursue advanced education or leadership opportunities"
+                    ]
+                },
+                managerial: {
+                    title: "Managerial Careers",
+                    description: "Careers in business, management, entrepreneurship, and leadership roles.",
+                    match: 0,
+                    icon: "fas fa-briefcase",
+                    examples: "Project Manager, CEO, Entrepreneur, Operations Manager",
+                    roadmap: [
+                        "Develop leadership and management skills",
+                        "Gain experience in your industry of interest",
+                        "Learn business fundamentals and strategy",
+                        "Build a strong professional network",
+                        "Consider an MBA or business certification",
+                        "Seek leadership opportunities in current role",
+                        "Develop financial and operational acumen",
+                        "Stay current with business trends and technologies"
+                    ]
+                }
+            };
+    
+        
+            const courses = [
+                {
+                    title: "Introduction to Computer Science",
+                    provider: "Harvard University (edX)",
+                    duration: "12 weeks",
+                    link: "https://pll.harvard.edu/course/cs50-introduction-computer-science",
+                    category: "technical"
+                },
+                {
+                    title: "Graphic Design Specialization",
+                    provider: "CalArts (Coursera)",
+                    duration: "6 months",
+                    link: "https://www.coursera.org/specializations/graphic-design?msockid=2e2e645cb7f96e8f388871d6b6bc6fe4",
+                    category: "creative"
+                },
+                {
+                    title: "Psychology of Leadership",
+                    provider: "University of Michigan (Coursera)",
+                    duration: "8 weeks",
+                    link: "https://imarticus.org/postgraduate-program-in-achine-learning-artificial-intelligence/",
+                    category: "helping"
+                },
+                {
+                    title: "Data Science Fundamentals",
+                    provider: "IBM (edX)",
+                    duration: "10 weeks",
+                    link: "https://imarticus.org/postgraduate-program-in-achine-learning-artificial-intelligence/",
+                    category: "analytical"
+                },
+                {
+                    title: "Business Strategy Specialization",
+                    provider: "University of Virginia (Coursera)",
+                    duration: "5 months",
+                    link: "https://www.udemy.com/courses/business/strategy/?audience=DSA&campaigntype=Search&language=EN&matchtype=b&msclkid=211d2b971d561f2f9ef7439dd9d75e4d&portfolio=Bing-India&priority=Beta&product=Course&test=&topic=&utm_campaign=BG-Search_DSA_Beta_Prof_la.EN_cc.India&utm_content=deal4584&utm_medium=udemyads&utm_source=bing&utm_term=_._ag_1324913899911579_._ad__._kw_Business+en_._de_c_._dm__._pl__._ti_dat-2334606783826986%3Aloc-90_._li_157415_._pd__._",
+                    category: "managerial"
+                },
+                {
+                    title: "Web Development Bootcamp",
+                    provider: "Udemy",
+                    duration: "40 hours",
+                    link: "https://www.udemy.com/course/full-stack-web-development-bootcamp/?utm_source=bing&utm_medium=udemyads&utm_campaign=BG-Search_DSA_Alpha_Prof_la.EN_cc.India&campaigntype=Search&portfolio=Bing-India&language=EN&product=Course&test=&audience=DSA&topic=React_JS&priority=Alpha&utm_content=deal4584&utm_term=_._ag_1319416341524550_._ad__._kw_React+JS+en_._de_c_._dm__._pl__._ti_dat-2334263186422547%3Aloc-90_._li_157415_._pd__._&matchtype=b&msclkid=7eb692bde64b1410ce9efab7218c8551&couponCode=IND21PM",
+                    category: "technical"
+                },
+                {
+                    title: "Digital Marketing Certification",
+                    provider: "Google (Coursera)",
+                    duration: "3 months",
+                    link: "https://alison.com/course/digital-advertising-and-marketing-301?utm_source=bing&utm_medium=cpc&utm_campaign=531498933&utm_content=1361197932558940&utm_term=kwd-85076038372286:loc-90&msclkid=34df2f833a841e8384fa4789f29816d4",
+                    category: "managerial"
+                },
+                {
+                    title: "Human-Centered Design",
+                    provider: "IDEO (Acumen)",
+                    duration: "7 weeks",
+                    link: "https://www.udemy.com/course/human-centered-design/?utm_source=bing&utm_medium=udemyads&utm_campaign=BG-Search_DSA_Beta_Prof_la.EN_cc.India&campaigntype=Search&portfolio=Bing-India&language=EN&product=Course&test=&audience=DSA&topic=&priority=Beta&utm_content=deal4584&utm_term=_._ag_1324913899911579_._ad__._kw_Business+en_._de_c_._dm__._pl__._ti_dat-2334606783826986%3Aloc-90_._li_157415_._pd__._&matchtype=b&msclkid=7768c26edeb21367fc78aa6416e6af99&couponCode=IND21PM",
+                    category: "creative"
+                }
+            ];
+    
+            
+            const internships = [
+                {
+                    title: "Software Engineering Intern",
+                    company: "TechCorp",
+                    duration: "3 months",
+                    location: "Remote",
+                    link: "https://www.glassdoor.co.in/Job/software-engineer-intern-jobs-SRCH_KO0,24.htm",
+                    category: "technical"
+                },
+                {
+                    title: "Graphic Design Intern",
+                    company: "Creative Studios",
+                    duration: "2 months",
+                    location: "New York",
+                    link: "https://www.glassdoor.co.in/Job/graphic-designer-intern-jobs-SRCH_KO0,23.htm",
+                    category: "creative"
+                },
+                {
+                    title: "Social Work Intern",
+                    company: "Community Health",
+                    duration: "6 months",
+                    location: "Chicago",
+                    link: "https://internshala.com/internships/social-work-internship/",
+                    category: "helping"
+                },
+                {
+                    title: "Financial Analyst Intern",
+                    company: "Global Finance",
+                    duration: "3 months",
+                    location: "London",
+                    link: "https://in.indeed.com/q-financial-analyst-internship-jobs.html",
+                    category: "analytical"
+                },
+                {
+                    title: "Business Development Intern",
+                    company: "StartUp Hub",
+                    duration: "4 months",
+                    location: "San Francisco",
+                    link: "https://internshala.com/internships/business-development-internship/",
+                    category: "managerial"
+                },
+                {
+                    title: "Data Science Intern",
+                    company: "AI Innovations",
+                    duration: "3 months",
+                    location: "Boston",
+                    link: "https://internshala.com/internships/data-science-internship/",
+                    category: "technical"
+                },
+                {
+                    title: "Marketing Intern",
+                    company: "Digital Agency",
+                    duration: "3 months",
+                    location: "Remote",
+                    link: "https://internshala.com/internships/marketing-internship/",
+                    category: "managerial"
+                },
+                {
+                    title: "UX Research Intern",
+                    company: "Design Co.",
+                    duration: "4 months",
+                    location: "Seattle",
+                    link: "https://internshala.com/internships/ux-research-internship/",
+                    category: "creative"
+                }
+            ];
+    
+    
+            const quizQuestions = [
+                {
+                    question: "How comfortable are you with programming concepts?",
+                    options: [
+                        "No experience",
+                        "Beginner - basic understanding",
+                        "Intermediate - can write simple programs",
+                        "Advanced - comfortable with complex programming",
+                        "Expert - can develop full applications"
+                    ]
+                },
+                {
+                    question: "How would you rate your problem-solving skills?",
+                    options: [
+                        "Struggle with basic problems",
+                        "Can solve simple problems with effort",
+                        "Comfortable with moderate problems",
+                        "Good at solving complex problems",
+                        "Excellent at breaking down and solving any problem"
+                    ]
+                },
+                {
+                    question: "How would you describe your communication skills?",
+                    options: [
+                        "Very limited",
+                        "Basic - can communicate simple ideas",
+                        "Moderate - can explain most concepts",
+                        "Good - can present complex ideas clearly",
+                        "Excellent - can adapt to any audience"
+                    ]
+                },
+                {
+                    question: "How comfortable are you working in teams?",
+                    options: [
+                        "Prefer to work alone",
+                        "Can work in teams with guidance",
+                        "Comfortable in most team settings",
+                        "Enjoy collaborating with others",
+                        "Excel at leading and motivating teams"
+                    ]
+                },
+                {
+                    question: "How would you rate your ability to learn new skills?",
+                    options: [
+                        "Slow learner",
+                        "Can learn with significant effort",
+                        "Average learning speed",
+                        "Quick to pick up new concepts",
+                        "Very fast learner, enjoy mastering new skills"
+                    ]
+                }
+            ];
+    
+            let currentQuestionIndex = 0;
+            let answers = {};
+            let quizAnswers = {};
+    
+            
+            startAssessmentBtn.addEventListener('click', startAssessment);
+            ctaAssessmentBtn.addEventListener('click', startAssessment);
+            prevBtn.addEventListener('click', showPreviousQuestion);
+            nextBtn.addEventListener('click', showNextQuestion);
+            retakeAssessmentBtn.addEventListener('click', retakeAssessment);
+            downloadReportBtn.addEventListener('click', downloadReport);
+            resumeUpload.addEventListener('change', handleResumeUpload);
+            skillsQuizBtn.addEventListener('click', openSkillsQuiz);
+            closeQuizModal.addEventListener('click', closeQuiz);
+            submitQuizBtn.addEventListener('click', submitQuiz);
+            mentorGuidanceBtn.addEventListener('click', openMentorModal);
+            closeMentorModal.addEventListener('click', closeMentor);
+    
+    
+            function startAssessment() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                document.querySelector('section.gradient-bg').classList.add('hidden');
+                assessmentSection.classList.remove('hidden');
+                
+                currentQuestionIndex = 0;
+                answers = {};
+                
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+            }
+    
+            function showQuestion(index) {
+                const question = questions[index];
+                
+                let optionsHtml = '';
+                question.options.forEach((option, i) => {
+                    const isChecked = answers[question.id] === i;
+                    optionsHtml += `
+                        <div class="option-card p-4 rounded-lg cursor-pointer ${isChecked ? 'selected' : ''}" data-option-index="${i}">
+                            <div class="flex items-center">
+                                <input id="option-${i}" name="question-${question.id}" type="checkbox" value="${i}" 
+                                       class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 mr-3" ${isChecked ? 'checked' : ''}>
+                                <label for="option-${i}" class="text-gray-700 cursor-pointer">${option}</label>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                questionContainer.innerHTML = `
+                    <div class="fade-in">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">${question.question}</h3>
+                        <div class="question-options space-y-3" data-question-id="${question.id}">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                
+                prevBtn.classList.toggle('hidden', index === 0);
+                nextBtn.textContent = index === questions.length - 1 ? 'See Results' : 'Next';
+            }
+    
+            function showNextQuestion() {
+                const selectedOption = document.querySelector('input[name^="question-"]:checked');
+                const currentQuestion = questions[currentQuestionIndex];
+                
+                if (!selectedOption && answers[currentQuestion.id] === undefined) {
+                    questionContainer.classList.add('shake');
+                    setTimeout(() => questionContainer.classList.remove('shake'), 500);
+                    
+                    const errorElement = document.createElement('div');
+                    errorElement.className = 'text-red-500 text-sm mt-2';
+                    errorElement.textContent = 'Please select an option to continue';
+                    
+                    const existingError = questionContainer.querySelector('.text-red-500');
+                    if (existingError) existingError.remove();
+                    
+                    questionContainer.appendChild(errorElement);
+                    return;
+                }
+                
+                if (selectedOption) {
+                    answers[currentQuestion.id] = parseInt(selectedOption.value);
+                }
+                if (currentQuestionIndex === questions.length - 1) {
+                    showResults();
+                    return;
+                }
+                
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+            }
+    
+            function showPreviousQuestion() {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+            }
+    
+            function updateProgress() {
+                const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+                progressFill.style.width = `${progress}%`;
+                progressPercentage.textContent = `${Math.round(progress)}%`;
+            }
+    
+            function showResults() {
+                calculateCareerMatches();
+                
+                assessmentSection.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    resultsSection.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+                
+                displayCareerMatches();
+                displayRecommendations();
+                displayRoadmap();
+            }
+    
+            function calculateCareerMatches() {
+                Object.keys(careerPaths).forEach(key => {
+                    careerPaths[key].match = 0;
+                });
+                
+                Object.entries(answers).forEach(([questionId, answer]) => {
+                    const question = questions.find(q => q.id == questionId);
+                    
+                    switch (question.type) {
+                        case 'interest':
+                            if (answer === 0) careerPaths.technical.match += 25;
+                            if (answer === 1) careerPaths.creative.match += 25;
+                            if (answer === 2) careerPaths.helping.match += 25;
+                            if (answer === 3) careerPaths.analytical.match += 25;
+                            if (answer === 4) careerPaths.managerial.match += 25;
+                            break;
+                        case 'skill':
+                            if (answer === 0) careerPaths.technical.match += 20;
+                            if (answer === 1) careerPaths.creative.match += 20;
+                            if (answer === 2) careerPaths.helping.match += 20;
+                            if (answer === 3) careerPaths.analytical.match += 20;
+                            if (answer === 4) careerPaths.managerial.match += 20;
+                            break;
+                        case 'preference':
+                            if (answer === 0) careerPaths.analytical.match += 15;
+                            if (answer === 1) careerPaths.creative.match += 15;
+                            if (answer === 2) careerPaths.helping.match += 15;
+                            if (answer === 3) careerPaths.technical.match += 15;
+                            if (answer === 4) careerPaths.managerial.match += 15;
+                            break;
+                        case 'engagement':
+                            if (answer === 0) careerPaths.technical.match += 20;
+                            if (answer === 1) careerPaths.creative.match += 20;
+                            if (answer === 2) careerPaths.helping.match += 20;
+                            if (answer === 3) careerPaths.analytical.match += 20;
+                            if (answer === 4) careerPaths.managerial.match += 20;
+                            break;
+                        case 'values':
+                            if (answer === 0) careerPaths.technical.match += 20;
+                            if (answer === 1) careerPaths.creative.match += 20;
+                            if (answer === 2) careerPaths.helping.match += 20;
+                            if (answer === 3) careerPaths.analytical.match += 20;
+                            if (answer === 4) careerPaths.managerial.match += 20;
+                            break;
+                    }
+                });
+                
+                Object.keys(careerPaths).forEach(key => {
+                    careerPaths[key].match = Math.min(100, Math.round(careerPaths[key].match));
+                });
+            }
+    
+            function displayCareerMatches() {
+                careerMatchesContainer.innerHTML = '';
+                
+                const sortedCareers = Object.entries(careerPaths)
+                    .sort((a, b) => b[1].match - a[1].match)
+                    .slice(0, 3); 
+                
+                sortedCareers.forEach(([key, career], index) => {
+                    const delay = index * 100;
+                    
+                    const careerCard = document.createElement('div');
+                    careerCard.className = 'career-card bg-white rounded-xl shadow-md overflow-hidden result-card fade-in';
+                    careerCard.style.animationDelay = `${delay}ms`;
+                    careerCard.innerHTML = `
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                                    <i class="${career.icon} text-indigo-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800">${career.title}</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">${career.description}</p>
+                            <p class="text-sm text-gray-500 mb-3"><span class="font-medium">Examples:</span> ${career.examples}</p>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium text-gray-700">Match Score</span>
+                                <span class="text-sm font-bold text-indigo-600">${career.match}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${career.match}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    careerMatchesContainer.appendChild(careerCard);
+                });
+            }
+    
+            function displayRecommendations() {
+                const topCareer = Object.entries(careerPaths)
+                    .sort((a, b) => b[1].match - a[1].match)[0][0];
+                
+                const coursesList = document.getElementById('coursesList');
+                coursesList.innerHTML = '';
+                
+                const filteredCourses = courses.filter(course => course.category === topCareer)
+                                              .slice(0, 3); 
+                
+                filteredCourses.forEach((course, index) => {
+                    const courseItem = document.createElement('div');
+                    courseItem.className = 'flex justify-between items-center fade-in';
+                    courseItem.style.animationDelay = `${index * 100}ms`;
+                    courseItem.innerHTML = `
+                        <div>
+                            <h4 class="font-medium text-gray-800">${course.title}</h4>
+                            <p class="text-sm text-gray-500">${course.provider} • ${course.duration}</p>
+                        </div>
+                        <a href="${course.link}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View</a>
+                    `;
+                    coursesList.appendChild(courseItem);
+                });
+                
+                const internshipsList = document.getElementById('internshipsList');
+                internshipsList.innerHTML = '';
+                
+                const filteredInternships = internships.filter(internship => internship.category === topCareer)
+                                                      .slice(0, 3); 
+                
+                filteredInternships.forEach((internship, index) => {
+                    const internshipItem = document.createElement('div');
+                    internshipItem.className = 'flex justify-between items-center fade-in';
+                    internshipItem.style.animationDelay = `${index * 100}ms`;
+                    internshipItem.innerHTML = `
+                        <div>
+                            <h4 class="font-medium text-gray-800">${internship.title}</h4>
+                            <p class="text-sm text-gray-500">${internship.company} • ${internship.location} • ${internship.duration}</p>
+                        </div>
+                        <a href="${internship.link}" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Apply</a>
+                    `;
+                    internshipsList.appendChild(internshipItem);
+                });
+            }
+    
+            function displayRoadmap() {
+                const topCareer = Object.entries(careerPaths)
+                    .sort((a, b) => b[1].match - a[1].match)[0][0];
+                
+                roadmapContent.innerHTML = '';
+                
+                careerPaths[topCareer].roadmap.forEach((step, index) => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'roadmap-step fade-in';
+                    stepElement.style.animationDelay = `${index * 100}ms`;
+                    stepElement.innerHTML = `
+                        <h4 class="font-medium text-gray-800 mb-1">Step ${index + 1}</h4>
+                        <p class="text-gray-600">${step}</p>
+                    `;
+                    roadmapContent.appendChild(stepElement);
+                });
+            }
+    
+            function retakeAssessment() {
+                resultsSection.classList.add('hidden');
+                startAssessment();
+            }
+    
+            function downloadReport() {
+                alert('Report download functionality would generate a PDF with your results in a real implementation.');
+            }
+    
+            function handleResumeUpload(e) {
+                const fileInput = e.target;
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    fileNameDisplay.textContent = file.name;
+                    
+                    
+                    console.log('Selected file:', file.name);
+                
+                    setTimeout(() => {
+                        alert('Resume analysis complete! Your skills and experience have been incorporated into your career recommendations.');
+                    }, 1500);
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            }
+    
+            function openSkillsQuiz() {
+                skillsQuizModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                quizContainer.innerHTML = '';
+                quizAnswers = {};
+                
+                quizQuestions.forEach((question, qIndex) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'quiz-question bg-gray-50 p-4 rounded-lg';
+                    questionElement.innerHTML = `
+                        <h4 class="font-medium text-gray-800 mb-3">${qIndex + 1}. ${question.question}</h4>
+                        <div class="space-y-2">
+                            ${question.options.map((option, oIndex) => `
+                                <div class="quiz-option p-3 border rounded-lg cursor-pointer ${quizAnswers[qIndex] === oIndex ? 'selected' : ''}" 
+                                     data-question="${qIndex}" data-option="${oIndex}">
+                                    <input type="radio" name="quiz-${qIndex}" id="quiz-${qIndex}-${oIndex}" 
+                                           class="hidden" ${quizAnswers[qIndex] === oIndex ? 'checked' : ''}>
+                                    <label for="quiz-${qIndex}-${oIndex}" class="cursor-pointer">${option}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    quizContainer.appendChild(questionElement);
+                });
+                
+            
+                document.querySelectorAll('.quiz-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const questionIndex = this.dataset.question;
+                        const optionIndex = this.dataset.option;
+                        
+                    
+                        document.querySelectorAll(`.quiz-option[data-question="${questionIndex}"]`).forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        
+                
+                        this.classList.add('selected');
+                        
+                
+                        quizAnswers[questionIndex] = parseInt(optionIndex);
+                    });
+                });
+            }
+    
+            function closeQuiz() {
+                skillsQuizModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+    
+            function submitQuiz() {
+                
+                if (Object.keys(quizAnswers).length !== quizQuestions.length) {
+                    alert('Please answer all questions before submitting.');
+                    return;
+                }
+                
+                
+                let totalScore = 0;
+                Object.values(quizAnswers).forEach(answer => {
+                    totalScore += answer;
+                });
+                const averageScore = (totalScore / quizQuestions.length).toFixed(1);
+                
+                
+                quizContainer.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check text-indigo-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Quiz Completed!</h3>
+                        <p class="text-gray-600 mb-4">Your average skill level: ${averageScore}/4</p>
+                        <p class="text-gray-600">This information will help us refine your career recommendations.</p>
+                    </div>
+                `;
+                
+            
+                submitQuizBtn.textContent = 'Close';
+                submitQuizBtn.removeEventListener('click', submitQuiz);
+                submitQuizBtn.addEventListener('click', closeQuiz);
+            }
+    
+            function openMentorModal() {
+                mentorModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+    
+            function closeMentor() {
+                mentorModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
